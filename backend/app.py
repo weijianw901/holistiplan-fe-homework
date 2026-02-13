@@ -217,8 +217,31 @@ def delete_user(user_id):
 @app.route('/api/servers', methods=['GET'])
 @login_required
 def get_servers():
-    servers = Server.query.all()
-    return jsonify({'servers': [server.to_dict() for server in servers]}), 200
+    # Get pagination params
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 10, type=int)
+
+    # Safety guard
+    if limit <= 0:
+        limit = 10
+    if page <= 0:
+        page = 1
+
+    query = Server.query.order_by(Server.id.asc())
+
+    total = query.count()
+
+    servers = query.offset((page - 1) * limit).limit(limit).all()
+
+    total_pages = (total + limit - 1) // limit  # ceiling division
+
+    return jsonify({
+        'servers': [server.to_dict() for server in servers],
+        'total': total,
+        'page': page,
+        'limit': limit,
+        'total_pages': total_pages
+    }), 200
 
 @app.route('/api/servers/<int:server_id>', methods=['GET'])
 @login_required

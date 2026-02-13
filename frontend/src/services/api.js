@@ -20,7 +20,15 @@ api.interceptors.response.use(
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
-    return Promise.reject(error);
+    const normalizedError = {
+      status: error.response?.status,
+      message:
+        error.response?.data?.error ||
+        error.message ||
+        'Unexpected error occurred'
+    }
+
+    return Promise.reject(normalizedError)
   }
 );
 
@@ -44,7 +52,7 @@ export const usersAPI = {
 
 // Servers API
 export const serversAPI = {
-  getServers: () => api.get('/servers'),
+  getServers: (params) => api.get('/servers', { params }),
   getServer: (id) => api.get(`/servers/${id}`),
   createServer: (serverData) => api.post('/servers', serverData),
   updateServer: (id, serverData) => api.put(`/servers/${id}`, serverData),
