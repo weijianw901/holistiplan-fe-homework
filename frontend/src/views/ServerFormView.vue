@@ -220,7 +220,7 @@ export default {
             <select
               v-model="form.status"
               id="status"
-              class="form-input"
+              class="form-input cursor-pointer"
             >
               <option value="online">Online</option>
               <option value="offline">Offline</option>
@@ -275,14 +275,14 @@ export default {
         <button
           type="button"
           @click="cancel"
-          class="btn btn-secondary"
+          class="btn btn-secondary cursor-pointer"
         >
           Cancel
         </button>
         <button
           type="submit"
           :disabled="isSubmitting"
-          class="btn btn-primary"
+          class="btn btn-primary cursor-pointer"
         >
           {{ isSubmitting ? 'Saving...' : (isEdit ? 'Update Server' : 'Create Server') }}
         </button>
